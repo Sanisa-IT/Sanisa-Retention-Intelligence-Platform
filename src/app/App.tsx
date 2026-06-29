@@ -63,36 +63,44 @@ const complaints = [
     title: "Internet not working",
     priority: "High",
     status: "Open",
-    customer: "John Doe",
+    customer: "John D.",
     time: "2h ago",
     category: "Technical",
+    agent: "Unassigned",
+    notes: "Router reboot did not resolve. ISP ticket raised.",
   },
   {
     id: "#1286",
-    title: "Billing incorrect charge",
+    title: "Billing Incorrect",
     priority: "Medium",
     status: "In Progress",
-    customer: "Alisha M.",
+    customer: "Sarah K.",
     time: "4h ago",
     category: "Billing",
+    agent: "Tom R.",
+    notes: "Duplicate charge identified. Refund processing.",
   },
   {
     id: "#1285",
-    title: "Poor service quality",
+    title: "Poor Service",
     priority: "High",
     status: "Open",
-    customer: "Atu Kowalski",
+    customer: "Michael T.",
     time: "6h ago",
     category: "Service",
+    agent: "Unassigned",
+    notes: "Customer escalated after three failed callbacks.",
   },
   {
     id: "#1284",
-    title: "App not working",
-    priority: "High",
-    status: "Open",
-    customer: "Russell T.",
+    title: "App Not Working",
+    priority: "Low",
+    status: "Resolved",
+    customer: "Aisha M.",
     time: "8h ago",
     category: "Technical",
+    agent: "Dev Team",
+    notes: "Cache clear resolved the issue. Follow-up scheduled.",
   },
   {
     id: "#1283",
@@ -102,6 +110,8 @@ const complaints = [
     customer: "Priya S.",
     time: "1d ago",
     category: "Technical",
+    agent: "Tom R.",
+    notes: "Line test completed. Speed confirmed back to SLA.",
   },
   {
     id: "#1282",
@@ -111,6 +121,52 @@ const complaints = [
     customer: "Marc B.",
     time: "1d ago",
     category: "Retention",
+    agent: "Sarah Admin",
+    notes: "Retention offer extended. Awaiting customer decision.",
+  },
+  {
+    id: "#1281",
+    title: "Login access denied",
+    priority: "Medium",
+    status: "Open",
+    customer: "Lena W.",
+    time: "2d ago",
+    category: "Technical",
+    agent: "Dev Team",
+    notes: "Account locked after 5 failed attempts. Reset pending.",
+  },
+  {
+    id: "#1280",
+    title: "Service outage — no signal",
+    priority: "High",
+    status: "In Progress",
+    customer: "Oscar F.",
+    time: "2d ago",
+    category: "Technical",
+    agent: "Network Ops",
+    notes: "Regional outage confirmed. ETA restoration: 4h.",
+  },
+  {
+    id: "#1279",
+    title: "Wrong plan charged",
+    priority: "Medium",
+    status: "Resolved",
+    customer: "Fatima A.",
+    time: "3d ago",
+    category: "Billing",
+    agent: "Tom R.",
+    notes: "Plan corrected and prorated refund issued.",
+  },
+  {
+    id: "#1278",
+    title: "Equipment not delivered",
+    priority: "High",
+    status: "Open",
+    customer: "Daniel O.",
+    time: "3d ago",
+    category: "Logistics",
+    agent: "Unassigned",
+    notes: "Tracking shows stuck at depot for 5 days.",
   },
 ];
 
@@ -341,17 +397,19 @@ export default function App() {
         <header className="shrink-0 flex items-center justify-between px-6 py-3.5 border-b border-border">
           <div>
             <h1 className="text-[15px] font-semibold text-foreground leading-none">
-              CX Overview
+              {activeNav === "Complaints" ? "Complaints & Issues" : "CX Overview"}
             </h1>
             <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
-              Retention Intelligence Platform
+              {activeNav === "Complaints"
+                ? `${filteredComplaints.length} cases · ${complaints.filter((c) => c.status === "Open").length} open`
+                : "Retention Intelligence Platform"}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-muted rounded-md px-3 py-2 border border-border">
               <Search className="size-3.5 text-muted-foreground" />
               <input
-                placeholder="Search customers..."
+                placeholder={activeNav === "Complaints" ? "Search complaints..." : "Search customers..."}
                 className="bg-transparent text-[12px] text-foreground placeholder:text-muted-foreground outline-none w-40 font-mono"
               />
             </div>
@@ -363,6 +421,16 @@ export default function App() {
         </header>
 
         {/* Scrollable Body */}
+        {activeNav === "Complaints" ? (
+          <ComplaintsPage
+            complaints={complaints}
+            filteredComplaints={filteredComplaints}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            priorityFilter={priorityFilter}
+            setPriorityFilter={setPriorityFilter}
+          />
+        ) : (
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* ── KPI Row ── */}
           <div className="grid grid-cols-4 gap-3">
@@ -900,7 +968,235 @@ export default function App() {
             </div>
           </div>
         </div>
+        )}
       </main>
+    </div>
+  );
+}
+
+// ─── Complaints Page ──────────────────────────────────────────────────────────
+
+type Complaint = {
+  id: string;
+  title: string;
+  priority: string;
+  status: string;
+  customer: string;
+  time: string;
+  category: string;
+  agent: string;
+  notes: string;
+};
+
+function ComplaintsPage({
+  complaints,
+  filteredComplaints,
+  statusFilter,
+  setStatusFilter,
+  priorityFilter,
+  setPriorityFilter,
+}: {
+  complaints: Complaint[];
+  filteredComplaints: Complaint[];
+  statusFilter: string;
+  setStatusFilter: (v: string) => void;
+  priorityFilter: string;
+  setPriorityFilter: (v: string) => void;
+}) {
+  const [selected, setSelected] = useState<Complaint | null>(null);
+
+  const openCount = complaints.filter((c) => c.status === "Open").length;
+  const inProgressCount = complaints.filter((c) => c.status === "In Progress").length;
+  const resolvedCount = complaints.filter((c) => c.status === "Resolved").length;
+
+  return (
+    <div className="flex-1 flex overflow-hidden">
+      {/* ── List Panel ── */}
+      <div className="flex flex-col flex-1 overflow-hidden border-r border-border">
+        {/* Summary strip */}
+        <div className="shrink-0 flex items-center gap-6 px-6 py-3 border-b border-border bg-muted/30">
+          {[
+            { label: "Open", count: openCount, color: "text-blue-400" },
+            { label: "In Progress", count: inProgressCount, color: "text-indigo-400" },
+            { label: "Resolved", count: resolvedCount, color: "text-emerald-400" },
+            { label: "Total", count: complaints.length, color: "text-foreground" },
+          ].map((s) => (
+            <div key={s.label} className="flex items-baseline gap-1.5">
+              <span className={`font-mono text-lg font-semibold leading-none ${s.color}`}>
+                {s.count}
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wide">
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <div className="shrink-0 flex items-center gap-2 px-6 py-3 border-b border-border">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="text-[11px] font-mono bg-muted border border-border rounded-md px-3 py-1.5 text-foreground outline-none cursor-pointer hover:border-primary/40 transition-colors"
+          >
+            {["All Status", "Open", "In Progress", "Resolved"].map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="text-[11px] font-mono bg-muted border border-border rounded-md px-3 py-1.5 text-foreground outline-none cursor-pointer hover:border-primary/40 transition-colors"
+          >
+            {["All Priority", "High", "Medium", "Low"].map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+          <span className="ml-auto text-[10px] font-mono text-muted-foreground">
+            {filteredComplaints.length} result{filteredComplaints.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+
+        {/* Rows */}
+        <div className="flex-1 overflow-y-auto divide-y divide-border">
+          {filteredComplaints.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-40 text-muted-foreground font-mono text-[12px]">
+              No complaints match the current filters.
+            </div>
+          )}
+          {filteredComplaints.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setSelected(selected?.id === c.id ? null : c)}
+              className={`w-full text-left px-6 py-4 hover:bg-muted/40 transition-colors group ${
+                selected?.id === c.id ? "bg-muted/60 border-l-2 border-l-primary" : "border-l-2 border-l-transparent"
+              }`}
+            >
+              <div className="flex items-start gap-4">
+                {/* ID */}
+                <span className="text-[11px] font-mono text-muted-foreground w-12 shrink-0 pt-0.5">
+                  {c.id}
+                </span>
+
+                {/* Title + meta */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-foreground leading-snug">
+                    {c.title}
+                  </p>
+                  <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                    <PriorityBadge priority={c.priority} />
+                    <span className="text-muted-foreground text-[10px] font-mono">•</span>
+                    <StatusBadge status={c.status} />
+                    <span className="text-muted-foreground text-[10px] font-mono">•</span>
+                    <span className="text-[11px] font-mono text-muted-foreground">
+                      {c.category}
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-mono text-muted-foreground mt-1.5">
+                    Customer: {c.customer}
+                  </p>
+                </div>
+
+                {/* Time + chevron */}
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <span className="text-[10px] font-mono text-muted-foreground">
+                    {c.time}
+                  </span>
+                  <ChevronRight
+                    className={`size-4 transition-colors ${
+                      selected?.id === c.id ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Detail Panel ── */}
+      <div className="w-[340px] shrink-0 flex flex-col overflow-hidden">
+        {selected ? (
+          <>
+            <div className="shrink-0 flex items-center justify-between px-5 py-3.5 border-b border-border">
+              <span className="text-[11px] font-mono text-muted-foreground">
+                Case {selected.id}
+              </span>
+              <button
+                onClick={() => setSelected(null)}
+                className="text-[10px] font-mono text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Close ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+              {/* Title + badges */}
+              <div>
+                <h2 className="text-[15px] font-semibold text-foreground leading-snug">
+                  {selected.title}
+                </h2>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <PriorityBadge priority={selected.priority} />
+                  <StatusBadge status={selected.status} />
+                </div>
+              </div>
+
+              {/* Details grid */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                {[
+                  { label: "Customer", value: selected.customer },
+                  { label: "Category", value: selected.category },
+                  { label: "Assigned To", value: selected.agent },
+                  { label: "Logged", value: selected.time },
+                ].map((row) => (
+                  <div key={row.label}>
+                    <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-0.5">
+                      {row.label}
+                    </p>
+                    <p className="text-[12px] font-mono text-foreground font-medium">
+                      {row.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Notes */}
+              <div>
+                <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-1.5">
+                  Case Notes
+                </p>
+                <p className="text-[12px] font-mono text-foreground leading-relaxed bg-muted/50 rounded-md px-3 py-2.5 border border-border">
+                  {selected.notes}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="space-y-2 pt-1">
+                <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
+                  Actions
+                </p>
+                <button className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-[11px] font-semibold font-mono bg-primary/15 text-primary border border-primary/25 hover:bg-primary/25 transition-colors">
+                  <Zap className="size-3.5" />
+                  Assign &amp; Escalate
+                </button>
+                <button className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-[11px] font-semibold font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors">
+                  <CheckCircle2 className="size-3.5" />
+                  Mark Resolved
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-8">
+            <div className="size-10 rounded-full bg-muted flex items-center justify-center">
+              <MessageSquareWarning className="size-5 text-muted-foreground" />
+            </div>
+            <p className="text-[12px] font-mono text-muted-foreground leading-relaxed">
+              Select a complaint to view details and take action.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
