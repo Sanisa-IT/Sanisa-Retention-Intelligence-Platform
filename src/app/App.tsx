@@ -71,46 +71,89 @@ const churnData = [
 ];
 
 const complaints = [
-  { id: "#1287", title: "Internet not working", priority: "High", status: "Open", customer: "John D.", time: "2h ago", category: "Technical", agent: "Unassigned", notes: "Router reboot did not resolve. ISP ticket raised." },
-  { id: "#1286", title: "Billing Incorrect", priority: "Medium", status: "In Progress", customer: "Sarah K.", time: "4h ago", category: "Billing", agent: "Tom R.", notes: "Duplicate charge identified. Refund processing." },
-  { id: "#1285", title: "Poor Service", priority: "High", status: "Open", customer: "Michael T.", time: "6h ago", category: "Service", agent: "Unassigned", notes: "Customer escalated after three failed callbacks." },
-  { id: "#1284", title: "App Not Working", priority: "Low", status: "Resolved", customer: "Aisha M.", time: "8h ago", category: "Technical", agent: "Dev Team", notes: "Cache clear resolved the issue. Follow-up scheduled." },
-  { id: "#1283", title: "Slow connection speeds", priority: "Low", status: "Resolved", customer: "Priya S.", time: "1d ago", category: "Technical", agent: "Tom R.", notes: "Line test completed. Speed confirmed back to SLA." },
-  { id: "#1282", title: "Cancellation request", priority: "High", status: "In Progress", customer: "Marc B.", time: "1d ago", category: "Retention", agent: "Sarah Admin", notes: "Retention offer extended. Awaiting customer decision." },
-  { id: "#1281", title: "Login access denied", priority: "Medium", status: "Open", customer: "Lena W.", time: "2d ago", category: "Technical", agent: "Dev Team", notes: "Account locked after 5 failed attempts. Reset pending." },
-  { id: "#1280", title: "Service outage — no signal", priority: "High", status: "In Progress", customer: "Oscar F.", time: "2d ago", category: "Technical", agent: "Network Ops", notes: "Regional outage confirmed. ETA restoration: 4h." },
-  { id: "#1279", title: "Wrong plan charged", priority: "Medium", status: "Resolved", customer: "Fatima A.", time: "3d ago", category: "Billing", agent: "Tom R.", notes: "Plan corrected and prorated refund issued." },
-  { id: "#1278", title: "Equipment not delivered", priority: "High", status: "Open", customer: "Daniel O.", time: "3d ago", category: "Logistics", agent: "Unassigned", notes: "Tracking shows stuck at depot for 5 days." },
-];
-
-const customers = [
   {
-    id: "C001", name: "John Doe", initials: "JD", email: "john.doe@email.com", phone: "+44 7700 900123",
-    plan: "Business Pro", mrr: 299, since: "Jan 2023", score: 32, risk: "High", complaints: 3,
-    lastInteraction: "2 days ago", gradient: "from-indigo-500 to-violet-600",
-    timeline: [
-      { date: "Jun 24", event: "Complaint #1287 opened — internet outage" },
-      { date: "Jun 20", event: "Retention offer declined by customer" },
-      { date: "Jun 12", event: "Support call — issue unresolved" },
-      { date: "May 30", event: "Billing dispute raised" },
-      { date: "May 10", event: "Onboarding call completed" },
-    ],
-    notes: "Customer frustrated with repeated billing errors and service outages. Escalate to senior CX rep before next contact.",
-    riskFactors: ["3 unresolved complaints in 60 days", "Negative sentiment in last 2 contacts", "Payment delayed — overdue by 12 days", "Usage dropped 40% vs prior quarter", "No response to retention offer (May)"],
-    actions: ["Offer apology + Service Fix", "Provide 20% discount coupon", "Follow up in 48 hours"],
+    id: "#1287",
+    title: "Internet not working",
+    priority: "High",
+    status: "Open",
+    customer: "John Doe",
+    time: "2h ago",
+    category: "Technical",
   },
   {
-    id: "C002", name: "Sarah Kim", initials: "SK", email: "sarah.kim@techcorp.io", phone: "+44 7800 112233",
-    plan: "Enterprise", mrr: 899, since: "Mar 2022", score: 61, risk: "Medium", complaints: 1,
-    lastInteraction: "4 hours ago", gradient: "from-rose-500 to-pink-600",
-    timeline: [
-      { date: "Jun 26", event: "Billing complaint #1286 raised" },
-      { date: "Jun 15", event: "Quarterly review call — positive" },
-      { date: "Apr 02", event: "Plan upgraded to Enterprise" },
-    ],
-    notes: "Long-standing enterprise customer. Billing issue is isolated. High value — prioritise fast resolution.",
-    riskFactors: ["1 open billing complaint", "Billing agent response time exceeded SLA"],
-    actions: ["Issue refund within 24h", "Send personalised apology", "Schedule quarterly check-in"],
+    id: "#1286",
+    title: "Billing incorrect charge",
+    priority: "Medium",
+    status: "In Progress",
+    customer: "Alisha M.",
+    time: "4h ago",
+    category: "Billing",
+  },
+  {
+    id: "#1285",
+    title: "Poor service quality",
+    priority: "High",
+    status: "Open",
+    customer: "Atu Kowalski",
+    time: "6h ago",
+    category: "Service",
+  },
+  {
+    id: "#1284",
+    title: "App not working",
+    priority: "High",
+    status: "Open",
+    customer: "Russell T.",
+    time: "8h ago",
+    category: "Technical",
+  },
+  {
+    id: "#1283",
+    title: "Slow connection speeds",
+    priority: "Low",
+    status: "Resolved",
+    customer: "Priya S.",
+    time: "1d ago",
+    category: "Technical",
+  },
+  {
+    id: "#1282",
+    title: "Cancellation request",
+    priority: "High",
+    status: "In Progress",
+    customer: "Marc B.",
+    time: "1d ago",
+    category: "Retention",
+  },
+];
+
+const navItems = [
+  { icon: LayoutDashboard, label: "Dashboard", active: true },
+  { icon: Users, label: "Customers" },
+  { icon: MessageSquareWarning, label: "Complaints", badge: 6 },
+  { icon: AlertTriangle, label: "At-Risk" },
+  { icon: Zap, label: "Automation" },
+  { icon: BarChart3, label: "Reports" },
+  { icon: Settings, label: "Settings" },
+];
+
+const customerTabs = ["Overview", "Complaints", "Timeline", "Notes"];
+
+const riskFactors = [
+  "3 unresolved complaints in 60 days",
+  "Negative sentiment in last 2 contacts",
+  "Payment delayed — overdue by 12 days",
+  "Usage dropped 40% vs prior quarter",
+  "No response to retention offer (May)",
+];
+
+const recoverySteps = [
+  {
+    icon: AlertCircle,
+    label: "Issue Detection",
+    desc: "Complaint received & logged",
+    status: "done",
+    color: "#ef4444",
   },
   {
     id: "C003", name: "Michael Torres", initials: "MT", email: "m.torres@mail.com", phone: "+44 7911 445566",
@@ -324,13 +367,20 @@ function Layout() {
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-background">
         <header className="shrink-0 flex items-center justify-between px-6 py-3.5 border-b border-border">
           <div>
-            <h1 className="text-[15px] font-semibold text-foreground leading-none">{meta.title}</h1>
-            <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{meta.subtitle}</p>
+            <h1 className="text-[15px] font-semibold text-foreground leading-none">
+              CX Overview
+            </h1>
+            <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
+              Retention Intelligence Platform
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-muted rounded-md px-3 py-2 border border-border">
               <Search className="size-3.5 text-muted-foreground" />
-              <input placeholder="Search…" className="bg-transparent text-[12px] text-foreground placeholder:text-muted-foreground outline-none w-40 font-mono" />
+              <input
+                placeholder="Search customers..."
+                className="bg-transparent text-[12px] text-foreground placeholder:text-muted-foreground outline-none w-40 font-mono"
+              />
             </div>
             <button className="relative p-2 rounded-md hover:bg-muted transition-colors">
               <Bell className="size-4 text-muted-foreground" />
@@ -339,52 +389,39 @@ function Layout() {
           </div>
         </header>
 
-        <Outlet />
-      </main>
-    </div>
-  );
-}
-
-// ─── Dashboard Page ───────────────────────────────────────────────────────────
-
-function DashboardPage() {
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [priorityFilter, setPriorityFilter] = useState("All Priority");
-  const navigate = useNavigate();
-
-  const filteredComplaints = complaints.filter((c) => {
-    const matchStatus = statusFilter === "All Status" || c.status === statusFilter;
-    const matchPriority = priorityFilter === "All Priority" || c.priority === priorityFilter;
-    return matchStatus && matchPriority;
-  });
-
-  const [activeTab, setActiveTab] = useState("Overview");
-  const customerTabs = ["Overview", "Complaints", "Timeline", "Notes"];
-
-  const riskFactors = [
-    "3 unresolved complaints in 60 days",
-    "Negative sentiment in last 2 contacts",
-    "Payment delayed — overdue by 12 days",
-    "Usage dropped 40% vs prior quarter",
-    "No response to retention offer (May)",
-  ];
-
-  const recoverySteps = [
-    { icon: AlertCircle, label: "Issue Detection", desc: "Complaint received & logged", status: "done" },
-    { icon: Zap, label: "Automated Response", desc: "Apology sent · Case created", status: "done" },
-    { icon: CheckCircle2, label: "Resolution", desc: "Issue resolved by support", status: "active" },
-    { icon: Circle, label: "Follow Up", desc: "Customer satisfaction check", status: "pending" },
-  ];
-
-  return (
-    <div className="flex-1 overflow-y-auto p-5 space-y-4">
-      {/* KPI Row */}
-      <div className="grid grid-cols-4 gap-3">
-        <KpiCard label="At-Risk Customers" value="12,540" sub="↑ 340 from last month" trend="down" accent="#ef4444" />
-        <KpiCard label="Retention Rate" value="82%" sub="↑ 2.1% vs prior period" trend="up" accent="#10b981" />
-        <KpiCard label="Cases Open" value="1,204" sub="94 escalated · critical" trend="down" accent="#f59e0b" />
-        <KpiCard label="Recovered" value="324" sub="This month · +18% MoM" trend="up" accent="#6366f1" />
-      </div>
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* ── KPI Row ── */}
+          <div className="grid grid-cols-4 gap-3">
+            <KpiCard
+              label="At-Risk Customers"
+              value="12,540"
+              sub="↑ 340 from last month"
+              trend="down"
+              accent="#ef4444"
+            />
+            <KpiCard
+              label="Retention Rate"
+              value="82%"
+              sub="↑ 2.1% vs prior period"
+              trend="up"
+              accent="#10b981"
+            />
+            <KpiCard
+              label="Cases Open"
+              value="1,204"
+              sub="94 escalated · critical"
+              trend="down"
+              accent="#f59e0b"
+            />
+            <KpiCard
+              label="Recovered"
+              value="324"
+              sub="This month · +18% MoM"
+              trend="up"
+              accent="#6366f1"
+            />
+          </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-5 gap-3">
@@ -990,117 +1027,17 @@ function RetentionIntelligencePage() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="shrink-0 flex items-center gap-4 px-6 py-4 border-b border-border">
-          <div className={`size-11 rounded-full bg-gradient-to-br ${selected.gradient} flex items-center justify-center text-[14px] font-bold text-white shrink-0`}>{selected.initials}</div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-[15px] font-semibold text-foreground">{selected.name}</h2>
-              <RiskBadge risk={selected.risk} />
-            </div>
-            <p className="text-[11px] font-mono text-muted-foreground mt-0.5">{selected.email} · {selected.plan} · ${selected.mrr}/mo</p>
-          </div>
-          <ScoreRing score={selected.score} size={52} />
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-card border border-border rounded-lg p-5 flex items-start gap-5">
-              <ScoreRing score={selected.score} size={80} />
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Retention Score</p>
-                <p className="text-[22px] font-mono font-bold text-foreground leading-none">
-                  {selected.score}<span className="text-[13px] text-muted-foreground font-normal"> / 100</span>
-                </p>
-                <div className="mt-1.5"><RiskBadge risk={selected.risk} /></div>
-                <p className="text-[10px] font-mono text-muted-foreground mt-2">Last updated: today</p>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-lg p-5">
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-3">Risk Factors</p>
-              {selected.riskFactors.length > 0 ? (
-                <ul className="space-y-2">
-                  {selected.riskFactors.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-[12px] font-mono text-foreground">
-                      <span className="text-red-400 shrink-0 mt-0.5">▸</span>{f}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-[12px] font-mono text-emerald-400 flex items-center gap-1.5"><CheckCircle2 className="size-3.5" />No active risk factors detected.</p>
-              )}
-            </div>
-
-            <div className="bg-card border border-border rounded-lg p-5">
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                <Lightbulb className="size-3 text-amber-400" />Recommended Action
-              </p>
-              <ul className="space-y-2">
-                {selected.actions.map((a) => (
-                  <li key={a} className="flex items-center gap-2 text-[12px] font-mono text-indigo-300">
-                    <CheckCircle2 className="size-3.5 text-indigo-400 shrink-0" />{a}
-                  </li>
-                ))}
-              </ul>
-              <button className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-md text-[11px] font-semibold font-mono bg-primary/15 text-primary border border-primary/25 hover:bg-primary/25 transition-colors">
-                <Zap className="size-3.5" />Execute Retention Flow
-              </button>
-            </div>
-
-            <div className="bg-card border border-border rounded-lg p-5">
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-1.5">
-                <RefreshCw className="size-3 text-indigo-400" />Service Recovery Flow
-              </p>
-              <div className="relative flex flex-col">
-                {recoveryFlow.map((step, i) => {
-                  const Icon = step.icon;
-                  const stepStatus = i < 2 ? "done" : i === 2 && selected.score < 50 ? "active" : selected.score >= 50 ? "done" : "pending";
-                  const isDone = stepStatus === "done";
-                  const isActive = stepStatus === "active";
-                  return (
-                    <div key={step.label} className="flex gap-3 relative">
-                      {i < recoveryFlow.length - 1 && (
-                        <div className="absolute left-[13px] top-7 bottom-0 w-px" style={{ background: isDone ? "rgba(99,102,241,0.4)" : "rgba(255,255,255,0.07)" }} />
-                      )}
-                      <div className={`size-7 rounded-full flex items-center justify-center shrink-0 z-10 ${isDone ? "bg-indigo-500/20 border border-indigo-500/40" : isActive ? "bg-amber-500/20 border border-amber-500/50" : "bg-muted border border-border"}`}>
-                        <Icon className="size-3.5" style={{ color: isDone ? "#6366f1" : isActive ? "#f59e0b" : "#475569" }} />
-                      </div>
-                      <div className="pb-4 flex-1">
-                        <p className={`text-[12px] font-semibold font-mono leading-none ${stepStatus === "pending" ? "text-muted-foreground" : "text-foreground"}`}>{step.label}</p>
-                        <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{step.desc}</p>
-                        {isDone && <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-wide flex items-center gap-1 mt-1"><CheckCircle2 className="size-2.5" />Complete</span>}
-                        {isActive && <span className="text-[9px] font-mono text-amber-400 uppercase tracking-wide flex items-center gap-1 mt-1"><Clock className="size-2.5" />Active</span>}
-                      </div>
-                    </div>
-                  );
-                })}
+              {/* Action button */}
+              <div className="mt-2 pt-3 border-t border-border">
+                <button className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-[11px] font-semibold font-mono bg-primary/15 text-primary border border-primary/25 hover:bg-primary/25 transition-colors">
+                  <Zap className="size-3.5" />
+                  Trigger Resolution Flow
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
-}
-
-// ─── Router ───────────────────────────────────────────────────────────────────
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    Component: Layout,
-    children: [
-      { index: true, Component: DashboardPage },
-      { path: "customers", Component: CustomerProfilePage },
-      { path: "complaints", Component: ComplaintsPage },
-      { path: "at-risk", Component: RetentionIntelligencePage },
-    ],
-  },
-]);
-
-// ─── App ──────────────────────────────────────────────────────────────────────
-
-export default function App() {
-  return <RouterProvider router={router} />;
 }
